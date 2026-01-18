@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Gift Card App - Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#6366f1",
+                        "background-light": "#ffffff",
+                        "background-dark": "#0f172a",
+                        "surface-light": "#f8fafc",
+                        "surface-dark": "#1e293b",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "12px",
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../supabase_client.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .logo-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+    <!-- ... (navbar content unchanged) ... -->
+    <div class="h-12 w-full"></div>
+    <nav class="px-6 py-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+        <div class="flex items-center gap-2">
+            <span class="text-primary material-icons-round">confirmation_number</span>
+            <span class="font-bold text-lg tracking-tight">GiftVoucher <span class="font-normal text-slate-400">|
+                    Cashfree</span></span>
+        </div>
+        <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+            <span class="material-icons-round text-slate-500">more_vert</span>
+        </button>
+    </nav>
+    <main class="flex-1 flex flex-col px-8 pt-20">
+        <div class="mb-12">
+            <h1 class="text-6xl font-extrabold tracking-tighter mb-2 logo-gradient">
+                GiftCard
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 font-medium tracking-wide flex items-center gap-2">
+                Digital Vouchers <span class="text-[8px] opacity-50">•</span> Instant Delivery
+            </p>
+        </div>
+        <div class="flex gap-8 mb-8 border-b border-slate-100 dark:border-slate-800">
+            <button class="pb-4 text-lg font-bold border-b-2 border-slate-900 dark:border-white transition-all"
+                id="tab-login" onclick="switchTab('login')">
+                Login
+            </button>
+            <button
+                class="pb-4 text-lg font-bold text-slate-400 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-400 transition-all"
+                id="tab-signup" onclick="switchTab('signup')">
+                Sign Up
+            </button>
+        </div>
+
+        <!-- Login/Signup Form -->
+        <form class="space-y-4" id="auth-form" onsubmit="handleAuth(event)">
+            <div class="relative">
+                <input id="email" required
+                    class="w-full px-5 py-4 bg-slate-100 dark:bg-surface-dark border-none rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                    placeholder="Email" type="email" />
+            </div>
+            <div class="relative">
+                <input id="password" required minlength="6"
+                    class="w-full px-5 py-4 bg-slate-100 dark:bg-surface-dark border-none rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                    placeholder="Password" type="password" />
+                <button class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" type="button"
+                    onclick="togglePassword()">
+                    <span class="material-icons-round text-sm" id="eye-icon">visibility_off</span>
+                </button>
+            </div>
+
+            <div id="error-message" class="text-red-500 text-sm hidden"></div>
+            <div id="success-message" class="text-green-500 text-sm hidden"></div>
+
+            <button type="submit" id="submit-btn"
+                class="w-full py-4 bg-slate-800 dark:bg-indigo-600 hover:bg-slate-900 dark:hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all transform active:scale-[0.98] shadow-lg shadow-slate-200 dark:shadow-none mt-4">
+                Log In
+            </button>
+            <div class="pt-4 text-center">
+                <a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="#">Forgot
+                    password?</a>
+            </div>
+        </form>
+
+    </main>
+
+    <script>
+        let isLoginMode = true;
+
+        function switchTab(mode) {
+            isLoginMode = mode === 'login';
+            const loginTab = document.getElementById('tab-login');
+            const signupTab = document.getElementById('tab-signup');
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (isLoginMode) {
+                loginTab.className = "pb-4 text-lg font-bold border-b-2 border-slate-900 dark:border-white transition-all";
+                signupTab.className = "pb-4 text-lg font-bold text-slate-400 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-400 transition-all";
+                submitBtn.textContent = "Log In";
+            } else {
+                signupTab.className = "pb-4 text-lg font-bold border-b-2 border-slate-900 dark:border-white transition-all";
+                loginTab.className = "pb-4 text-lg font-bold text-slate-400 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-400 transition-all";
+                submitBtn.textContent = "Sign Up";
+            }
+            document.getElementById('error-message').classList.add('hidden');
+            document.getElementById('success-message').classList.add('hidden');
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility_off';
+            }
+        }
+
+        async function handleAuth(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            const btn = document.getElementById('submit-btn');
+
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+
+            try {
+                if (isLoginMode) {
+                    const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+                        email: email,
+                        password: password,
+                    });
+                    if (error) throw error;
+                    window.location.href = '../browse_trending_deals/index.html';
+                } else {
+                    const { data, error } = await window.supabaseClient.auth.signUp({
+                        email: email,
+                        password: password,
+                    });
+                    if (error) throw error;
+                    successDiv.textContent = "Sign up successful! Please check your email explicitly to confirm.";
+                    successDiv.classList.remove('hidden');
+                    // Optional: auto login if confirmed or tell them to check email
+                }
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
+            }
+        }
+    </script>
+    <div class="mt-12 flex items-center gap-4">
+        <div class="h-[1px] flex-1 bg-slate-100 dark:bg-slate-800"></div>
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Or continue with</span>
+        <div class="h-[1px] flex-1 bg-slate-100 dark:bg-slate-800"></div>
+    </div>
+    <div class="mt-8 grid grid-cols-2 gap-4">
+        <button
+            class="flex items-center justify-center gap-2 py-3 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <img alt="Google logo" class="w-5 h-5"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFnhPNykzhzZuvCHQ_8FjxXFJrmRaJO1LeatLpmDssSOwAGjvAgDmdo1Kq0DO2v_2mzsIrdv9B7Bucy924kGgQARcouIxju_w5nYw5p24RAswofu4gTCLan-eEMEbqXxaK_T736X4p4g726LC9q2sftwqQ8e_5TkW3rI5rmHTuIxvMODszeztCezMR7Zwo4SHs7GzsgnOyLNbC3OV2KLbEm-ywap3bWxfNuhSt7uoR9lcTb5rH4hEQzUY4Fn-AvzeBouRSMSbi04gd" />
+            <span class="text-sm font-semibold">Google</span>
+        </button>
+        <button
+            class="flex items-center justify-center gap-2 py-3 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <img alt="Apple logo" class="w-5 h-5"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCISFuUQFNuFeUNzgyHXvNen2acVrP3Mo7NhmOwp2_H6vFFTitnA2ZVpUgpJFiumv4Lro4qrWWKOIdyeU2Xh2ZbZt6vH4p605GFSKBL3CR4Rtl-m79bYH32uq4iF17dS-x3s6k4cZ8T6KKo3BBdRsSd5_phE8vqq-KfxQcbaDK78IdwKPc9klELtOogCWibo4BLLNgD0MBkepcQDnqxo37HvhL6aSHQX99FALtOK6v5oLSB7L7d0xV8yiEF1-46SZmskhoGH4IQrzF0" />
+            <span class="text-sm font-semibold">Apple</span>
+        </button>
+    </div>
+    </main>
+    <div class="fixed right-6 bottom-24">
+        <button
+            class="w-12 h-12 bg-slate-400/20 backdrop-blur-md border border-white/20 rounded-xl flex items-center justify-center text-slate-500 shadow-xl"
+            onclick="document.documentElement.classList.toggle('dark')">
+            <span class="material-icons-round">settings_suggest</span>
+        </button>
+    </div>
+    <div class="h-8 flex justify-center items-end pb-2">
+        <div class="w-32 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full"></div>
+    </div>
+
+</body>
+
+</html>

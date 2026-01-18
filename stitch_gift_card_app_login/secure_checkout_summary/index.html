@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Secure Checkout Summary</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+    <script src="../supabase_client.js"></script>
+    <script>
+        async function checkAuth() {
+            if (!window.supabaseClient) return;
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = '../gift_card_app_login/index.html';
+            }
+        }
+        window.addEventListener('load', checkAuth);
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5d40d4",
+                        "background-light": "#faf7f4",
+                        "background-dark": "#1a1a1a",
+                        "spring-green": "#9ade7b",
+                    },
+                    fontFamily: {
+                        "display": ["Epilogue", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Epilogue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#110f1a] dark:text-white min-h-screen flex flex-col">
+    <!-- Top Navigation Bar -->
+    <nav
+        class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 flex items-center justify-between">
+        <button onclick="window.location.href='../browse_trending_deals/index.html'"
+            class="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800 shadow-sm border border-neutral-100 dark:border-neutral-700">
+            <span class="material-symbols-outlined text-[#110f1a] dark:text-white">arrow_back_ios_new</span>
+        </button>
+        <h2 class="text-lg font-bold tracking-tight">Checkout</h2>
+        <div class="w-10"></div> <!-- Spacer for symmetry -->
+    </nav>
+    <main class="flex-1 px-4 pb-32">
+        <!-- Order Summary Section -->
+        <div class="mt-4">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold tracking-tight">Order Summary</h3>
+                <span id="item-count" class="text-primary text-sm font-semibold">0 Items</span>
+            </div>
+            <div id="cart-items"
+                class="bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-neutral-100 dark:border-neutral-800">
+                <!-- Dynamic Items -->
+            </div>
+            <!-- Promo Code -->
+            <div class="mt-6">
+                <div class="flex gap-2">
+                    <div class="relative flex-1">
+                        <input
+                            class="w-full bg-white dark:bg-neutral-900 border-neutral-100 dark:border-neutral-800 rounded-lg px-4 py-3 text-sm focus:ring-primary focus:border-primary"
+                            placeholder="Promo code" type="text" />
+                    </div>
+                    <button class="bg-primary/10 text-primary px-6 py-3 rounded-lg text-sm font-bold">Apply</button>
+                </div>
+            </div>
+            <!-- Payment Breakdown -->
+            <div
+                class="mt-6 bg-white dark:bg-neutral-900 rounded-xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-neutral-100 dark:border-neutral-800">
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <p class="text-neutral-500 dark:text-neutral-400 text-sm">Subtotal</p>
+                        <p id="subtotal" class="font-medium text-sm">₹0.00</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-neutral-500 dark:text-neutral-400 text-sm">Tax (0%)</p>
+                        <p class="font-medium text-sm">₹0.00</p>
+                    </div>
+                    <div
+                        class="pt-3 border-t border-neutral-50 dark:border-neutral-800 flex justify-between items-center">
+                        <p class="font-bold text-base">Total to Pay</p>
+                        <p id="total" class="font-bold text-xl text-primary">₹0.00</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Payment Methods -->
+            <div class="mt-8 mb-8">
+                <h3 class="text-lg font-bold tracking-tight mb-4">Payment Method</h3>
+                <div class="space-y-3">
+                    <!-- Cashfree - Only Option -->
+                    <div class="relative group">
+                        <input checked="" class="hidden peer" id="cashfree" name="payment" type="radio" />
+                        <label
+                            class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-neutral-900 border-2 border-primary shadow-sm bg-primary/5 transition-all"
+                            for="cashfree">
+                            <div
+                                class="w-12 h-8 bg-neutral-100 dark:bg-neutral-800 rounded flex items-center justify-center overflow-hidden">
+                                <span class="material-symbols-outlined text-primary">account_balance</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">Cashfree Payments</p>
+                                <p class="text-xs text-neutral-500">Cards, UPI, Netbanking, Wallets</p>
+                            </div>
+                            <div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+                                <div class="w-2.5 h-2.5 rounded-full bg-primary"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!-- Security Badge -->
+            <div class="flex items-center justify-center gap-2 py-4">
+                <span class="material-symbols-outlined text-spring-green text-lg">shield</span>
+                <p class="text-xs text-neutral-500 font-medium">Your payment is secured with 256-bit encryption</p>
+            </div>
+    </main>
+    <!-- Fixed Bottom CTA -->
+    <div
+        class="fixed bottom-0 left-0 right-0 p-4 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-lg border-t border-neutral-100 dark:border-neutral-800">
+        <div class="max-w-md mx-auto">
+            <button id="pay-btn" onclick="handlePayment()"
+                class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+                <span id="btn-text">Pay Now</span>
+                <span id="btn-icon" class="material-symbols-outlined text-white">arrow_forward</span>
+            </button>
+            <div class="h-6"></div> <!-- iOS Home Indicator spacing -->
+        </div>
+    </div>
+    <script>
+        function renderCart() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const container = document.getElementById('cart-items');
+            const countDetails = document.getElementById('item-count');
+            const subtotalEl = document.getElementById('subtotal');
+            const totalEl = document.getElementById('total');
+
+            container.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<div class="p-4 text-center">Your cart is empty</div>';
+            }
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                const recipientInfo = item.recipient ? `<p class="text-[10px] text-primary mt-1 font-semibold uppercase tracking-wider">Gift for: ${item.recipient.name}</p>` : '';
+                const itemImage = item.image ? `<div class="size-16 rounded-lg bg-gray-100 flex-shrink-0" style="background-image: url('${item.image}'); background-size: cover; background-position: center;"></div>` : `<div class="size-16 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-gray-400">redeem</span></div>`;
+
+                container.innerHTML += `
+            <div class="flex items-center gap-4 p-4 border-b border-neutral-50 dark:border-neutral-800 last:border-0">
+                ${itemImage}
+                <div class="flex flex-col flex-1">
+                    <p class="text-base font-bold leading-tight">${item.name}</p>
+                    <p class="text-neutral-500 dark:text-neutral-400 text-sm mt-0.5">₹${item.price.toFixed(2)}</p>
+                    ${recipientInfo}
+                </div>
+                <div class="text-right">
+                    <button onclick="removeItem(${index})" class="text-red-500 text-sm hover:underline">Remove</button>
+                </div>
+            </div>`;
+            });
+
+            countDetails.innerText = `${cart.length} Items`;
+            subtotalEl.innerText = `₹${total.toFixed(2)}`;
+            totalEl.innerText = `₹${total.toFixed(2)}`;
+        }
+
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        async function handlePayment() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            const btn = document.getElementById('pay-btn');
+            const btnText = document.getElementById('btn-text');
+
+            btn.disabled = true;
+            btnText.innerText = 'Initializing...';
+
+            try {
+                // 1. Check if Cashfree SDK is loaded
+                if (typeof Cashfree === 'undefined') {
+                    throw new Error('Cashfree SDK failed to load. Please check your internet connection.');
+                }
+
+                // 2. Get user details from Supabase
+                const { data: { user } } = await window.supabaseClient.auth.getUser();
+                if (!user) {
+                    window.location.href = '../gift_card_app_login/index.html';
+                    return;
+                }
+
+                btnText.innerText = 'Creating Secure Order...';
+
+                // 3. Call Supabase Edge Function to create Cashfree order
+                // Note: We use 'PRODUCTION' by default as per your request.
+                const { data, error } = await window.supabaseClient.functions.invoke('create-cashfree-order', {
+                    body: {
+                        order_amount: total,
+                        order_currency: "INR",
+                        customer_id: user.id,
+                        customer_email: user.email,
+                        customer_phone: user.phone || "9999999999",
+                        x_environment: "PRODUCTION"
+                    }
+                });
+
+                if (error) {
+                    console.error('Supabase Function Error:', error);
+                    if (error.message.includes('MISSING_SECRETS')) {
+                        alert("⚠️ Payment Setup Required:\nYou haven't set your Cashfree API keys in the Supabase Dashboard yet.\n\nGo to Settings > Edge Functions > Secrets and add CASHFREE_APP_ID and CASHFREE_SECRET_KEY.");
+                    } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+                        alert("🔐 Authentication Error:\nYour session might have expired. Please try logging out and logging back in.");
+                    } else {
+                        alert(`❌ Payment Initialization Failed:\n${error.message || 'Check Supabase Logs'}`);
+                    }
+                    return;
+                }
+
+                if (!data || !data.payment_session_id) {
+                    console.error('Invalid Response Data:', data);
+                    throw new Error(data.error || 'Failed to get payment session from Cashfree. Check your API Keys.');
+                }
+
+                console.log('Order created successfully:', data);
+                btnText.innerText = 'Opening Gateway...';
+
+                // 4. Initialize Cashfree in Production Mode
+                const cashfree = Cashfree({
+                    mode: "production"
+                });
+
+                // 5. Open Checkout in Modal (more reliable for file:// protocol)
+                let checkoutOptions = {
+                    paymentSessionId: data.payment_session_id,
+                    redirectTarget: "_modal",
+                };
+
+                cashfree.checkout(checkoutOptions).then((result) => {
+                    if (result.error) {
+                        console.error('Cashfree SDK Error:', result.error);
+                        alert('Checkout Error: ' + result.error.message);
+                    }
+                    if (result.redirect) {
+                        console.log("Redirecting to payment page...");
+                    }
+                });
+
+            } catch (err) {
+                console.error('Payment Error:', err);
+                let msg = err.message;
+
+                if (err.message.includes('fetch')) {
+                    msg = "Network Error: Could not reach the payment server. Make sure your Edge Function is deployed and active.";
+                }
+
+                alert('Payment Initialization Failed\n\n' + msg + '\n\nPlease check the browser console for details.');
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = 'Pay Now';
+            }
+        }
+
+        renderCart();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>GiftCard - Browse Trending Deals</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../supabase_client.js"></script>
+  <script>
+    async function checkAuth() {
+      // Give the client a moment to initialize if needed, though script order handles it
+      if (!window.supabaseClient) return;
+      const { data: { session } } = await window.supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = '../gift_card_app_login/index.html';
+      }
+    }
+    // Wait for helper script to load
+    window.addEventListener('load', checkAuth);
+  </script>
+  tailwind.config = {
+  darkMode: "class",
+  theme: {
+  extend: {
+  colors: {
+  primary: "#6366f1",
+  "background-light": "#f9fafb",
+  "background-dark": "#111827",
+  },
+  fontFamily: {
+  display: ["Inter", "sans-serif"],
+  },
+  borderRadius: {
+  DEFAULT: "1rem",
+  },
+  },
+  },
+  };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body
+  class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex justify-center">
+  <div
+    class="relative w-full max-w-[430px] min-h-screen bg-white dark:bg-slate-900 shadow-2xl overflow-hidden flex flex-col">
+    <div class="h-12 flex items-center justify-between px-8 pt-4">
+      <span class="text-sm font-semibold">9:41</span>
+      <div class="flex items-center gap-1">
+        <span class="material-icons-round text-lg">signal_cellular_alt</span>
+        <span class="material-icons-round text-lg">wifi</span>
+        <span class="material-icons-round text-lg rotate-90">battery_full</span>
+      </div>
+    </div>
+    <header class="px-6 py-4 flex items-center justify-between">
+      <button onclick="window.location.href='../side_navigation_menu/index.html'"
+        class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+        <span class="material-symbols-outlined text-2xl">menu</span>
+      </button>
+      <h1 class="text-xl font-bold tracking-tight">GiftCard</h1>
+      <button
+        class="w-10 h-10 rounded-full bg-slate-900 dark:bg-slate-100 flex items-center justify-center overflow-hidden">
+        <span class="text-white dark:text-slate-900 font-bold text-sm">SH</span>
+      </button>
+    </header>
+    <main class="flex-1 overflow-y-auto no-scrollbar pb-32">
+      <div class="px-6 mt-4">
+        <div class="relative flex items-center">
+          <span class="material-icons-round absolute left-4 text-slate-400">search</span>
+          <input
+            class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary text-sm shadow-sm"
+            placeholder="Search brands..." type="text" />
+        </div>
+      </div>
+      <div class="px-6 mt-8">
+        <div class="bg-primary/10 dark:bg-primary/20 rounded-3xl p-6 relative overflow-hidden">
+          <div class="relative z-10">
+            <h2 class="text-lg font-bold text-primary">Instant Vouchers</h2>
+            <p class="text-slate-600 dark:text-slate-300 text-sm mt-1">Get your favorite brands delivered instantly to
+              your inbox.</p>
+          </div>
+          <span
+            class="material-icons-round absolute -right-4 -bottom-4 text-8xl text-primary/10 -rotate-12">redeem</span>
+        </div>
+      </div>
+      <section class="mt-8">
+        <div class="px-6 flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold">Trending Deals</h2>
+          <button class="text-primary text-sm font-semibold">See all</button>
+        </div>
+        <div class="px-6 grid grid-cols-2 gap-4">
+          <div
+            class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow">
+            <div
+              class="aspect-square bg-slate-100 dark:bg-slate-700 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+              <img alt="Netflix Gift Card" class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD70PUF9lkwtuSlvXdADPVeN_WW6pzOy2VCw_O7ca5P79EdEUE6kF963wcBZWeaOGfZUZDhnuik5q8Kkd8CU717u3HsBkos0BpFcwBI335jDOcLHLfXY8bkSLhi90u5_vEtHjXTetIwzf6WxeeP-Vf1l0QrlbF2YqJVtzH4xNHxnkL4XYtcQy5MgM-hVdLDArfpfy3N8p-noqljvqTN8Kwusq8FCBqEH9Az8nI2TlX7vGTXu3NEHgmNFPOOT1On_rt7xX61BsvzcDSO" />
+            </div>
+            <span
+              class="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">25%
+              OFF</span>
+            <h3 class="mt-2 font-bold text-lg">Netflix</h3>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-slate-400 dark:text-slate-500 line-through text-xs">₹200</span>
+              <span class="text-slate-900 dark:text-white font-bold">₹150</span>
+            </div>
+            <button
+              class="w-full mt-4 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 py-3 rounded-2xl font-semibold text-sm hover:opacity-90 active:scale-95 transition-all"
+              onclick="viewDetails('Netflix', 150, 'https://lh3.googleusercontent.com/aida-public/AB6AXuD70PUF9lkwtuSlvXdADPVeN_WW6pzOy2VCw_O7ca5P79EdEUE6kF963wcBZWeaOGfZUZDhnuik5q8Kkd8CU717u3HsBkos0BpFcwBI335jDOcLHLfXY8bkSLhi90u5_vEtHjXTetIwzf6WxeeP-Vf1l0QrlbF2YqJVtzH4xNHxnkL4XYtcQy5MgM-hVdLDArfpfy3N8p-noqljvqTN8Kwusq8FCBqEH9Az8nI2TlX7vGTXu3NEHgmNFPOOT1On_rt7xX61BsvzcDSO')">
+              View
+            </button>
+          </div>
+          <div
+            class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow">
+            <div
+              class="aspect-square bg-slate-100 dark:bg-slate-700 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+              <img alt="Apple Gift Card" class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSyVwzbw8cPtudpt6I6KlYPzWCRDTZzK9ZfO96bTx5hBIEViR9zDzQ-mfPfiB7aVKoJDsEx9b604ldSV9bXPVqljgZZhBkGVuyrCMkOex7kzBTrTHJR2D6d8lZWybeeu_DbQub7RpN9hPuFDH9wmAwj107aiCuDMghUnhYG4U0bSXHJPoL633c7dJRHRjk9Pd5UB2vs5ZM8L8l0BTt2j6t96eC7rgHW3doMUXwBmXuu6WvD59pCbbEWufLgPlTdqKAGtjmtKTo687v" />
+            </div>
+            <span
+              class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">10%
+              OFF</span>
+            <h3 class="mt-2 font-bold text-lg">Apple</h3>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-slate-400 dark:text-slate-500 line-through text-xs">₹100</span>
+              <span class="text-slate-900 dark:text-white font-bold">₹90</span>
+            </div>
+            <button
+              class="w-full mt-4 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 py-3 rounded-2xl font-semibold text-sm hover:opacity-90 active:scale-95 transition-all"
+              onclick="viewDetails('Apple', 90, 'https://lh3.googleusercontent.com/aida-public/AB6AXuBSyVwzbw8cPtudpt6I6KlYPzWCRDTZzK9ZfO96bTx5hBIEViR9zDzQ-mfPfiB7aVKoJDsEx9b604ldSV9bXPVqljgZZhBkGVuyrCMkOex7kzBTrTHJR2D6d8lZWybeeu_DbQub7RpN9hPuFDH9wmAwj107aiCuDMghUnhYG4U0bSXHJPoL633c7dJRHRjk9Pd5UB2vs5ZM8L8l0BTt2j6t96eC7rgHW3doMUXwBmXuu6WvD59pCbbEWufLgPlTdqKAGtjmtKTo687v')">
+              View
+            </button>
+          </div>
+          <div
+            class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow">
+            <div
+              class="aspect-square bg-slate-100 dark:bg-slate-700 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+              <img alt="Amazon Gift Card" class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOIYvrOa23zrGdKkr-I7jAJJA9Dlm8HtaEcDn8zWBiP2qaOPjPyl49K16i9cY3jDgLxHZXubJy-7EQrVu7z9J0tuDMVGOnse8j4M8EvDXuvQfyo6Agg_NGAvLqb0bNjLofqT1J0OthmLhAct5WaC_SzFuAION_5fK3ibUF4KS3GboJJUhDTrq2bv9cJkEdIg4GiWQn-Xpg6Y8muny8CQM0pDmwN0MVoOr-ZYe_-yehNEQlbfvqaCvujeD5LzBz8nV8mxS79l83j6Vb" />
+            </div>
+            <span
+              class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">HOT
+              DEAL</span>
+            <h3 class="mt-2 font-bold text-lg">Amazon</h3>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-slate-400 dark:text-slate-500 line-through text-xs">₹50</span>
+              <span class="text-slate-900 dark:text-white font-bold">₹45</span>
+            </div>
+            <button
+              class="w-full mt-4 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 py-3 rounded-2xl font-semibold text-sm hover:opacity-90 active:scale-95 transition-all"
+              onclick="viewDetails('Amazon', 45, 'https://lh3.googleusercontent.com/aida-public/AB6AXuDOIYvrOa23zrGdKkr-I7jAJJA9Dlm8HtaEcDn8zWBiP2qaOPjPyl49K16i9cY3jDgLxHZXubJy-7EQrVu7z9J0tuDMVGOnse8j4M8EvDXuvQfyo6Agg_NGAvLqb0bNjLofqT1J0OthmLhAct5WaC_SzFuAION_5fK3ibUF4KS3GboJJUhDTrq2bv9cJkEdIg4GiWQn-Xpg6Y8muny8CQM0pDmwN0MVoOr-ZYe_-yehNEQlbfvqaCvujeD5LzBz8nV8mxS79l83j6Vb')">
+              View
+            </button>
+          </div>
+          <div
+            class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow">
+            <div
+              class="aspect-square bg-slate-100 dark:bg-slate-700 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+              <img alt="Spotify Gift Card" class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHe4Ns7q4qnFPdUAWalgF9X_KqklAfEgqUv3oOCAOAj6YMs-CGvqCOTYYuIY90pcNQJYioGpGIoJcCrfv0IMZPUZoXYz33uFhiJWKsMY0mmj3GaDsrurjOPzU2YpQmou5KtAVy3kMeuMyoDA9N9-W1QL-me_0YfaU4MkhcBncbmv5lZJelT9T0nj_XTFr-BubWLcf9Ydl3mrkTptP6UB5JeaHan20ZPa_k88ayN_r3wLxeAhsLX04u-ioAt_p18aWZby3edmNjN5zi" />
+            </div>
+            <span
+              class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">LIMITED</span>
+            <h3 class="mt-2 font-bold text-lg">Spotify</h3>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-slate-400 dark:text-slate-500 line-through text-xs">₹30</span>
+              <span class="text-slate-900 dark:text-white font-bold">₹22.50</span>
+            </div>
+            <button
+              class="w-full mt-4 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 py-3 rounded-2xl font-semibold text-sm hover:opacity-90 active:scale-95 transition-all"
+              onclick="viewDetails('Spotify', 22.50, 'https://lh3.googleusercontent.com/aida-public/AB6AXuBHe4Ns7q4qnFPdUAWalgF9X_KqklAfEgqUv3oOCAOAj6YMs-CGvqCOTYYuIY90pcNQJYioGpGIoJcCrfv0IMZPUZoXYz33uFhiJWKsMY0mmj3GaDsrurjOPzU2YpQmou5KtAVy3kMeuMyoDA9N9-W1QL-me_0YfaU4MkhcBncbmv5lZJelT9T0nj_XTFr-BubWLcf9Ydl3mrkTptP6UB5JeaHan20ZPa_k88ayN_r3wLxeAhsLX04u-ioAt_p18aWZby3edmNjN5zi')">
+              View
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <button
+      class="absolute right-6 bottom-32 w-12 h-12 bg-slate-400/80 backdrop-blur-md rounded-xl flex items-center justify-center text-white shadow-lg z-20">
+      <span class="material-icons-round">settings</span>
+    </button>
+    <nav class="absolute bottom-6 left-6 right-6">
+      <div
+        class="bg-slate-900 dark:bg-slate-800 text-white rounded-[2.5rem] py-4 px-8 flex justify-between items-center shadow-xl">
+        <a href="#" class="flex flex-col items-center gap-1 group">
+          <span class="material-icons-round text-2xl text-white">home</span>
+          <span class="w-1 h-1 rounded-full bg-white"></span>
+        </a>
+        <a href="../loyalty_rewards_dashboard/index.html"
+          class="flex flex-col items-center gap-1 group opacity-50 hover:opacity-100 transition-opacity">
+          <span class="material-icons-round text-2xl">favorite_border</span>
+        </a>
+        <a href="../secure_checkout_summary/index.html"
+          class="flex flex-col items-center gap-1 group opacity-50 hover:opacity-100 transition-opacity">
+          <span class="material-icons-round text-2xl">shopping_bag</span>
+        </a>
+        <a href="../my_gift_card_orders/index.html"
+          class="flex flex-col items-center gap-1 group opacity-50 hover:opacity-100 transition-opacity">
+          <span class="material-icons-round text-2xl">receipt_long</span>
+        </a>
+      </div>
+    </nav>
+    <div class="absolute bottom-1 w-full flex justify-center">
+      <div class="w-32 h-1 bg-slate-300 dark:bg-slate-700 rounded-full"></div>
+    </div>
+  </div>
+
+  <script>
+    function addToCart(name, price) {
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      cart.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert('Added ' + name + ' to cart!');
+    }
+
+    function viewDetails(name, price, image) {
+      const params = new URLSearchParams({ name, price, image });
+      window.location.href = `../gift_card_details_and_selection/index.html?${params.toString()}`;
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "cleanUrls": false,
+  "trailingSlash": true,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/gift_card_app_login/index.html"
+    }
+  ]
+}
